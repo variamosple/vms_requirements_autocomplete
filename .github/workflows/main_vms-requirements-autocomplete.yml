@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'vms-requirements-autocomplete'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7E92C280089A4ACA9BE171359F517119 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_313849A642C4419DBF42EE0040A44DA1 }}
           package: .
