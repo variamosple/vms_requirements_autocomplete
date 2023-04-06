@@ -1,4 +1,5 @@
-FROM node:lts-bullseye-slim
+# FROM node:lts-bullseye-slim
+FROM node:16-alpine
   
 # Create app directory
 WORKDIR /usr/src/app
@@ -15,5 +16,5 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 9898
-CMD [ "node", "server.js" ]
+EXPOSE 8080
+CMD [ "node", "index.js" ]
