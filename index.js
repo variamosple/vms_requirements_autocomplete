@@ -5,7 +5,7 @@ var autocompleteService=require("./services/autocompleteService");
 var app = express();
 const PORT = process.env.PORT||8080;
 const HOST = '127.0.0.1';
-const VERSION = "1.23.04.11.09"
+const VERSION = "1.23.04.11.10"
 
 app.use(express.json());
 app.use(cors());
