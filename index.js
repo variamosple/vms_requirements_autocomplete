@@ -1,6 +1,7 @@
 var express = require('express');
 var cors = require('cors');
 var autocompleteService=require("./services/autocompleteService");
+const { additionalRequirementsSuggest } = require('./services/additionalRequirements');
 
 var app = express();
 const PORT = process.env.PORT||8080;
@@ -79,7 +80,7 @@ app.post('/additionalRequirements', async function (req, res, next) {
     try {
         console.log(req.body.input)
         res.setHeader('Content-Type', 'application/json');
-        let data = await autocompleteService.additionalRequirementsSuggest(req);
+        let data = await additionalRequirements.additionalRequirementsSuggest(req);
         res.end(JSON.stringify(data));
     } catch (error) {
         res.status(400).send(JSON.stringify(error));
