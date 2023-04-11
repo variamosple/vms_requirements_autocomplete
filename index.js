@@ -75,6 +75,17 @@ app.post('/domain/suggest/functional', async function (req, res, next) {
     }
 });
 
+app.post('/additionalRequirements', async function (req, res, next) {
+    try {
+        console.log(req.body.input)
+        res.setHeader('Content-Type', 'application/json');
+        let data = await autocompleteService.additionalRequirementsSuggest(req);
+        res.end(JSON.stringify(data));
+    } catch (error) {
+        res.status(400).send(JSON.stringify(error));
+    }
+});
+
 app.listen(PORT, () => {
     console.log('Running version ' + VERSION + ` on http://${HOST}:${PORT}`);
 });
