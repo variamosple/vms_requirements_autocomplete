@@ -42,11 +42,33 @@ app.post('/security/suggest', async function (req, res, next) {
     }
 });
 
+app.post('/security/suggest/functional', async function (req, res, next) {
+    try {
+        console.log(req.body.input)
+        res.setHeader('Content-Type', 'application/json');
+        let data = await autocompleteService.functionalRequirementsSuggest(req);
+        res.end(JSON.stringify(data));
+    } catch (error) {
+        res.status(400).send(JSON.stringify(error));
+    }
+});
+
 app.post('/domain/suggest', async function (req, res, next) {
     try {
         console.log(req.body.input)
         res.setHeader('Content-Type', 'application/json');
         let data = await autocompleteService.domainRequirementsSuggest(req);
+        res.end(JSON.stringify(data));
+    } catch (error) {
+        res.status(400).send(JSON.stringify(error));
+    }
+});
+
+app.post('/domain/suggest/functional', async function (req, res, next) {
+    try {
+        console.log(req.body.input)
+        res.setHeader('Content-Type', 'application/json');
+        let data = await autocompleteService.domainFunctionalRequirementsSuggest(req);
         res.end(JSON.stringify(data));
     } catch (error) {
         res.status(400).send(JSON.stringify(error));
