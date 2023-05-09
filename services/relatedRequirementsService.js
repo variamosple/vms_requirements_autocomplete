@@ -1,9 +1,40 @@
 async function suggest(req) {
     let project = req.body.data.project;
+    let modelId = req.body.data.modelSelectedId;
 
-    let model = project.productLines[0].domainEngineering.models[0];
-    let parentRequirement = model.elements[0];
+    let model = null;
+    for (let p = 0; p < project.productLines.length; p++) {
+        const productLine = project.productLines[p];
+        for (let m = 0; m < productLine.domainEngineering.models.length; m++) {
+            let plmodel = productLine.domainEngineering.models[m];
+            if (plmodel.id == modelId) {
+                model = plmodel;
+                m = productLine.domainEngineering.models.length;
+                p = project.productLines.length;
+            }
+        }
+    }
 
+    if (!model) {
+        return project;
+    }
+
+    for (let i = 0; i < req.body.data.selectedElementsIds.length; i++) {
+        let selectedElementId = req.body.data.selectedElementsIds[i];
+        for (let m = 0; m < model.elements.length; m++) {
+            let element = model.elements[m];
+            if (element.id == selectedElementId) {
+                let parentRequirement = element;
+                createRelatedRequirements(model, parentRequirement);
+                break;
+            }
+        }
+    }
+ 
+    return project;
+}
+
+function createRelatedRequirements(model, parentRequirement) {
     let x = parentRequirement.x; //position x on the diagram
     let y = parentRequirement.y; //position x on the diagram
     let w = parentRequirement.width; //width on the diagram
@@ -15,14 +46,12 @@ async function suggest(req) {
         let relatedRequirement = createRelatedRequirement(parentRequirement, i);
         relatedRequirement.x += dx;
         relatedRequirement.y += dy;
-        model.elements.push(relatedRequirement); 
-        let relationship=createRelationship(parentRequirement, relatedRequirement);
+        model.elements.push(relatedRequirement);
+        let relationship = createRelationship(parentRequirement, relatedRequirement);
         model.relationships.push(relationship);
- 
+
         dx += w + 50;
     }
-
-    return project;
 }
 
 function createRelatedRequirement(parentRequirement, index) {
@@ -30,23 +59,23 @@ function createRelatedRequirement(parentRequirement, index) {
     let relatedRequirement = JSON.parse(json);
     relatedRequirement.id = generateUUID();
     relatedRequirement.name = "Related requirement " + index;
-    relatedRequirement.properties[0].value=parentRequirement.properties[0].value + "_" + index;
-    relatedRequirement.properties[2].value="The system must ... " + index;
+    relatedRequirement.properties[0].value = parentRequirement.properties[0].value + "_" + index;
+    relatedRequirement.properties[2].value = "The system must ... " + index;
 
     return relatedRequirement;
 }
 
 function createRelationship(parentRequirement, relatedRequirement) {
-    let relationship={
+    let relationship = {
         id: generateUUID(),
-        name:"-",
-        type:"SecurityRequirement_SecurityRequirement",
-        sourceId:relatedRequirement.id,
-        targetId:parentRequirement.id,
-        min:0,
-        max:99999,
-        points:[],
-        properties:[] 
+        name: "-",
+        type: "SecurityRequirement_SecurityRequirement",
+        sourceId: relatedRequirement.id,
+        targetId: parentRequirement.id,
+        min: 0,
+        max: 99999,
+        points: [],
+        properties: []
     }
     return relationship;
 }
