@@ -669,6 +669,7 @@ async function functionalRequirementsSuggest(req) {
 
         if (Object.keys(activity).includes(words[words.length - 1])) {
             if (words[words.length - 1] == "verb") sentence = sentence.replace("verb", "");
+            if ((words[words.length - 1]) == "provide") options=(Object.keys(asset["of"]))
             options.push((activity[words[words.length - 1]]).placeholder1);
         }
         else if (words.length >= 3 && Object.keys(activity).includes(words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1])) {
@@ -934,24 +935,29 @@ async function domainRequirementsSuggest(req) {
         else options = (Object.keys(systemDomain));
     }
     else if (s && !p && !a1 && !sc && !a2 && !sm && !vc && !ad && !c2 && !aa) {
-
-        if (Object.keys(systemDomain).includes(words[words.length - 1]))
-            if ((systemDomain[words[words.length - 1]]).placeholder1 != "")
+        if (Object.keys(systemDomain).includes(words[words.length - 1])) {
+            if ((systemDomain[words[words.length - 1]]).placeholder1 != "") {
                 options.push((systemDomain[words[words.length - 1]]).placeholder1);
-            else options.push((systemDomain[words[words.length - 1]]).next);
-        else if (systemDomain[elementInSentence(systemDomain, sentence)]["next"] == (words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1]) && systemDomain[elementInSentence(systemDomain, sentence)].placeholder2 != "")
-            options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder2);
-        else if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder3 != "") {
-            options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder3);
-            if (sentence.includes(" Restriction: ")) {
-
-                str = sentence.split("Restriction: ")
-                sentence = str[0] + str[1]
-                options = (priority);
+            } else {
+                options.push((systemDomain[words[words.length - 1]]).next);
             }
+        } else if (systemDomain[elementInSentence(systemDomain, sentence)]["next"] == (words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1])) {
+            if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder2 != "") {
+                options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder2);
+            } else if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder3 != "") {
+                if (sentence.includes("Restriction: ")) {
+                    str = sentence.replace("Restriction: ", "");
+                    sentence = str.trim();
+                }
+                options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder3);
+            } else {
+                options = priority;
+            }
+        } else {
+            options = priority;
         }
-        else options = (priority);
     }
+    
     else if (p && !a1 && !sc && !a2 && !sm && !vc && !ad && !c2 && !aa) {
         if (priority.includes(words[words.length - 1]))
             options = (Object.keys(activity));
@@ -1231,25 +1237,28 @@ async function domainFunctionalRequirementsSuggest(req) {
             options.push(conditions1[elementInSentence(conditions1, sentence)]["next"]);
         else options = (Object.keys(systemDomain));
     }
-   else if(s && !p && !a1 && !sc && !a2 && !sm && !vc && !ad && !c2 && !aa)
-    {
-  
-    if(Object.keys(systemDomain).includes(words[words.length-1]))
-        if((systemDomain[words[words.length-1]]).placeholder1!="")
-           options.push((systemDomain[words[words.length-1]]).placeholder1);
-        else options.push((systemDomain[words[words.length-1]]).next);
-    else if(systemDomain[elementInSentence(systemDomain,sentence)]["next"]==(words[words.length-3]+" "+words[words.length-2]+" "+words[words.length-1]) && systemDomain[elementInSentence(systemDomain,sentence)].placeholder2!="")
-        options.push(systemDomain[elementInSentence(systemDomain,sentence)].placeholder2);
-    else if(systemDomain[elementInSentence(systemDomain,sentence)].placeholder3!="" ){
-        options.push(systemDomain[elementInSentence(systemDomain,sentence)].placeholder3);
-        if(sentence.includes(" Restriction: ")){
-
-        str=sentence.split("Restriction: ")
-        sentence=str[0]+str[1]
-        options=(priority);
-        } 
-     }
-    else options=(priority);
+    else if (s && !p && !a1 && !sc && !a2 && !sm && !vc && !ad && !c2 && !aa) {
+        if (Object.keys(systemDomain).includes(words[words.length - 1])) {
+            if ((systemDomain[words[words.length - 1]]).placeholder1 != "") {
+                options.push((systemDomain[words[words.length - 1]]).placeholder1);
+            } else {
+                options.push((systemDomain[words[words.length - 1]]).next);
+            }
+        } else if (systemDomain[elementInSentence(systemDomain, sentence)]["next"] == (words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1])) {
+            if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder2 != "") {
+                options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder2);
+            } else if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder3 != "") {
+                if (sentence.includes("Restriction: ")) {
+                    str = sentence.replace("Restriction: ", "");
+                    sentence = str.trim();
+                }
+                options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder3);
+            } else {
+                options = priority;
+            }
+        } else {
+            options = priority;
+        }
     }
     else if (p && !a1 && !sc && !a2 && !sm && !vc && !ad && !c2 && !aa) {
         if (priority.includes(words[words.length - 1]))
@@ -1265,8 +1274,13 @@ async function domainFunctionalRequirementsSuggest(req) {
 
         if (Object.keys(activity).includes(words[words.length - 1])) {
             if (words[words.length - 1] == "verb") sentence = sentence.replace("verb", "");
+            if ((words[words.length - 1]) == "provide") options=(Object.keys(asset["of"]))
+            console.log(options)
             options.push((activity[words[words.length - 1]]).placeholder1);
+            
+            
         }
+        
         else if (words.length >= 3 && Object.keys(activity).includes(words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1])) {
             options.push((activity[words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1]]).placeholder1);
         }
@@ -1286,7 +1300,9 @@ async function domainFunctionalRequirementsSuggest(req) {
                 (words[words.length - 4] + " " + words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1]) == activity[elementInSentence(activity, sentence)]["next"] ||
                 activity[elementInSentence(activity, sentence)]["next"].includes((words[words.length - 1]))))
             options.push((activity[elementInSentence(activity, sentence)]).placeholder2)
+        
         else {
+            
             //console.log(securityCriteria)
             //Needs to be synchronized
             //await getAllCriteria();
