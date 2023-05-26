@@ -3,6 +3,7 @@ var cors = require('cors');
 var autocompleteService = require("./services/autocompleteService");
 var additionalRequirements = require('./services/additionalRequirements');
 var relatedRequirementsService = require('./services/relatedRequirementsService');
+var relatedRequirementsApplicationService = require('./services/relatedRequirementsApplicationService');
 var generate = require('./services/generateSRS');
 
 var app = express();
@@ -100,6 +101,25 @@ app.post('/relatedRequirements', async function (req, res, next) {
         console.log(req.body.data)
         res.setHeader('Content-Type', 'application/json');
         let project = await relatedRequirementsService.suggest(req);
+        console.log(project);
+        let contentResponse = {
+            transactionId: "1",
+            message: "Completed.",
+            data: {
+                content: project
+            }
+        }
+        res.end(JSON.stringify(contentResponse));
+    } catch (error) {
+        res.status(400).send(JSON.stringify(error));
+    }
+});
+
+app.post('/relatedApplicationRequirements', async function (req, res, next) {
+    try {
+        console.log(req.body.data)
+        res.setHeader('Content-Type', 'application/json');
+        let project = await relatedRequirementsApplicationService.suggest(req);
         console.log(project);
         let contentResponse = {
             transactionId: "1",
