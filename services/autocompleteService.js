@@ -210,11 +210,52 @@ const autoAdaptive = {
 
 
 };
+var domains=[];
 
 const getAllCriteria = async () => {
 
     try {
         var res = await axios.get(ip + 'criteria')
+        //console.log(res);
+        securityCriteria = res.data;
+
+        //.then((response)=>{
+
+        //securityCriteria=response.data;
+        //})
+        //.catch(function (error) {
+        //console.log(error.toJSON());
+        //});
+    }
+    catch (e) {
+        console.log(e)
+    }
+
+}
+const getAllDomains = async () => {
+
+    try {
+        var res = await axios.get(ip + 'domain')
+        //console.log(res);
+        domains = res.data;
+
+        //.then((response)=>{
+
+        //securityCriteria=response.data;
+        //})
+        //.catch(function (error) {
+        //console.log(error.toJSON());
+        //});
+    }
+    catch (e) {
+        console.log(e)
+    }
+
+}
+const getDomainCriteria = async (domain) => {
+
+    try {
+        var res = await axios.get(ip +'domain/'+domain+'/criteria')
         //console.log(res);
         securityCriteria = res.data;
 
@@ -252,6 +293,26 @@ async function getCriteriaMechanisms(criterion) {
     }
 
 }
+async function getDomainCriteriaMechanisms(criterion,domain) {
+
+    try {
+        var res = await axios.get(ip + 'domain/'+domain+'/' + criterion )
+        //console.log(res);
+        securityMechanism = res.data;
+
+        //.then((response)=>{
+
+        //securityCriteria=response.data;
+        //})
+        //.catch(function (error) {
+        //console.log(error.toJSON());
+        //});
+    }
+    catch (e) {
+        console.log(e)
+    }
+
+}
 function elementInSentence(obj, sentence) {
     var str = "";
     Object.keys(obj).some(element => {
@@ -271,9 +332,10 @@ function ObjectInSentence(obj, sentence) {
 
 async function securityRequirementsSuggest(req) {
     console.log(req.body.input)
-
+    await getAllDomains();
     var words = req.body.input.trim().split(" ");
     var sentence = req.body.input.trim();
+    var domain = req.body.domain.trim();
     console.log(sentence)
     //var str={"input":sentence, "options":[]};
     var options = [];
@@ -377,7 +439,8 @@ async function securityRequirementsSuggest(req) {
             options = (Object.keys(activity));
         //verb replaced
         else if (priority.includes(words[words.length - 2])) {
-            await getAllCriteria();
+            if(domains.includes(domain)) await getDomainCriteria(domain)
+            else await getAllCriteria();
             options = (securityCriteria);
         }
     }
@@ -409,7 +472,8 @@ async function securityRequirementsSuggest(req) {
         else {
             console.log(securityCriteria)
             //Needs to be synchronized
-            await getAllCriteria();
+            if(domains.includes(domain)) await getDomainCriteria(domain)
+            else await getAllCriteria();
             options = (securityCriteria);
 
         }
@@ -462,7 +526,10 @@ async function securityRequirementsSuggest(req) {
             //Needs to be synchronized
             criterion = securityCriteria.find(element => words.includes(element));
             console.log(criterion);
-            if (criterion != "") await getCriteriaMechanisms(criterion);
+            if (criterion != "") {
+                if(domains.includes(domain)) await getDomainCriteriaMechanisms(criterion,domain)
+                else await getCriteriaMechanisms(criterion);
+            }
             sentence += " by ";
             options = (securityMechanism);
 
@@ -841,6 +908,7 @@ async function domainRequirementsSuggest(req) {
 
     var words = req.body.input.trim().split(" ");
     var sentence = req.body.input.trim();
+    var domain = req.body.domain.trim();
     console.log(sentence)
     //var str={"input":sentence, "options":[]};
     var options = [];
@@ -963,7 +1031,8 @@ async function domainRequirementsSuggest(req) {
             options = (Object.keys(activity));
         //verb replaced
         else if (priority.includes(words[words.length - 2])) {
-            await getAllCriteria();
+            if(domains.includes(domain)) await getDomainCriteria(domain)
+            else await getAllCriteria();
             options = (securityCriteria);
         }
     }
@@ -995,7 +1064,8 @@ async function domainRequirementsSuggest(req) {
         else {
             console.log(securityCriteria)
             //Needs to be synchronized
-            await getAllCriteria();
+            if(domains.includes(domain)) await getDomainCriteria(domain)
+            else await getAllCriteria();
             options = (securityCriteria);
 
         }
@@ -1048,7 +1118,10 @@ async function domainRequirementsSuggest(req) {
             //Needs to be synchronized
             criterion = securityCriteria.find(element => words.includes(element));
             console.log(criterion);
-            if (criterion != "") await getCriteriaMechanisms(criterion);
+            if (criterion != ""){
+                if(domains.includes(domain)) await getDomainCriteriaMechanisms(criterion,domain)
+                else await getCriteriaMechanisms(criterion);
+            }
             sentence += " by ";
             options = (securityMechanism);
 
