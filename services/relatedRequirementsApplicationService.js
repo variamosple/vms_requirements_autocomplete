@@ -2,6 +2,7 @@ var addReq=require ("./additionalRequirements");
 async function suggest(req) {
     let project = req.body.data.project;
     let modelId = req.body.data.modelSelectedId;
+    var domain ='';
     
     let model = null;
     for (let p = 0; p < project.productLines.length; p++) {
@@ -12,6 +13,8 @@ async function suggest(req) {
                 model = plmodel;
                 m = productLine.applicationEngineering.models.length;
                 p = project.productLines.length;
+                domain= productLine.domain;
+                console.log(domain)
             }
         }
     }
@@ -30,7 +33,7 @@ async function suggest(req) {
             if (element.id == selectedElementId) {
                 let parentRequirement = element;
                
-                await createRelatedRequirements(model, parentRequirement);
+                await createRelatedRequirements(model, parentRequirement,domain);
                 console.log(model)
                 break;
             }
@@ -40,7 +43,7 @@ async function suggest(req) {
     return project;
 }
 
-async function createRelatedRequirements(model, parentRequirement) {
+async function createRelatedRequirements(model, parentRequirement,domain) {
     let x = parentRequirement.x; //position x on the diagram
     let y = parentRequirement.y; //position x on the diagram
     let w = parentRequirement.width; //width on the diagram
@@ -48,7 +51,7 @@ async function createRelatedRequirements(model, parentRequirement) {
     let dy = h + 50;
     let dx = - (w + 50);
 
-    var reqs=await addReq.additionalRequirementsSuggest({"body":{"input":parentRequirement.properties.find(prop => prop.name === "Description").value}})
+    var reqs=await addReq.additionalRequirementsSuggest({"body":{"input":parentRequirement.properties.find(prop => prop.name === "Description").value,"domain":domain}})
     console.log(reqs)
     for (let i=0;i<reqs.additionalReq.length;i++){
         let relatedRequirement = await createRelatedRequirement(parentRequirement, i, reqs.additionalReq[i]);
