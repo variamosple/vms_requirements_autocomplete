@@ -134,13 +134,13 @@ app.post('/relatedApplicationRequirements', async function (req, res, next) {
     }
 });
 
-app.post('/generate/SyRS', async function (req, res, next) {
+app.post('/generate', async function (req, res, next) {
     try {
         console.log('generate')
         console.log(req.body.data)
-        res.setHeader('Content-Disposition', 'attachment; filename=SyRS.docx');
+        res.setHeader('Content-Disposition', 'attachment; filename=SRS-'+req.body.data.project.name+'.docx');
         res.setHeader('Content-Type','application/vnd.openxmlformats-officedocument.wordprocessingml.documents; charset=UTF-8')
-        let project = await generate.generateSyRS(req);
+        let project = await generate.generate(req);
         console.log(project);
         res.send(Buffer.from(project, 'base64'));
     } catch (error) {
@@ -148,7 +148,7 @@ app.post('/generate/SyRS', async function (req, res, next) {
         res.status(400).send(JSON.stringify(error));
     }
 });
-app.post('/generate/SRS', async function (req, res, next) {
+/* app.post('/generate/SRS', async function (req, res, next) {
     try {
         console.log('generate')
         console.log(req.body.data)
@@ -161,7 +161,7 @@ app.post('/generate/SRS', async function (req, res, next) {
         console.log(error)
         res.status(400).send(JSON.stringify(error));
     }
-});
+}); */
 app.listen(PORT, () => {
     console.log('Running version ' + VERSION + ` on http://${HOST}:${PORT}`);
 });
