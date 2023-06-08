@@ -135,7 +135,7 @@ app.post('/relatedApplicationRequirements', async function (req, res, next) {
 });
 
 app.post('/generate', async function (req, res, next) {
-    try {
+   /*  try {
         console.log('generate')
         console.log(req.body.data)
         res.setHeader('Content-Disposition', 'attachment; filename=SRS-'+req.body.data.project.name+'.docx');
@@ -146,7 +146,26 @@ app.post('/generate', async function (req, res, next) {
     } catch (error) {
         console.log(error)
         res.status(400).send(JSON.stringify(error));
+    } */
+    try { 
+        res.setHeader('Content-Type', 'application/json');
+        let project = await generate.generate(req);
+        let content_encode = project;
+		let dataResponse ={
+				"name": 'SRS-'+req.body.data.project.name+'.docx',
+				"content": content_encode,
+			  };
+			  
+		let data={
+		  "transactionId": 'asdf',
+		  "message": 'Success',
+		  "data": dataResponse
+		}  
+        res.end(JSON.stringify(data));
+    } catch (error) {
+        res.status(400).send(JSON.stringify(error));
     }
+
 });
 /* app.post('/generate/SRS', async function (req, res, next) {
     try {
