@@ -1,6 +1,47 @@
 const docx = require('docx');
 const { AlignmentType, Document, Footer, Header, HeadingLevel, Packer, Paragraph, TextRun, UnderlineType, Table, TableCell, TableRow } = docx;
 
+let pl= null;
+async function generate(req){
+   let model= getModel(req);
+   if(pl.type=="System") return await generateSyRS(req);
+   if(pl.type=="Software") return await generateSRS(req);
+}
+
+async function getModel(req){
+    let project = req.body.data.project;
+    let modelId = req.body.data.modelSelectedId;
+    
+    let model = null;
+    for (let p = 0; p < project.productLines.length; p++) {
+        const productLine = project.productLines[p];
+        for (let m = 0; m < productLine.domainEngineering.models.length; m++) {
+            let plmodel = productLine.domainEngineering.models[m];
+            if (plmodel.id == modelId) {
+                model = plmodel;
+                m = productLine.domainEngineering.models.length;
+                p = project.productLines.length;
+                pl=productLine;
+            }
+        }
+
+        if (!model){
+        for (let m = 0; m < productLine.applicationEngineering.models.length; m++) {
+            let plmodel = productLine.applicationEngineering.models[m];
+            if (plmodel.id == modelId) {
+                model = plmodel;
+                m = productLine.applicationEngineering.models.length;
+                p = project.productLines.length;
+            }
+        }
+    }
+    }
+    
+    
+
+    if (!model) return null;
+    else return model;
+}
 
 async function generateSyRS(req) {
   /*   let project = req.body.data.project;
@@ -9,7 +50,68 @@ async function generateSyRS(req) {
     let parentRequirement = model.elements[0];
 
 */
-console.log(req.body.data.name)
+
+let model = await getModel(req);
+var functional=[];
+var security=[];
+var usability=[];
+var performance=[];
+var sysInt=[];
+var sysOp=[];
+var maintainability=[];
+var reliability=[];
+var sysMod=[];
+var physCh=[];
+var env=[];
+var InfMan=[];
+var policies=[];
+var sysLife=[];
+var pack=[];
+var other=[];
+
+console.log(req.body.data.project.name)
+
+for (let m = 0; m < model.elements.length; m++) {
+    let element = model.elements[m];
+    
+    if (element.type == "FunctionalRequirement") {
+        functional.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+    }
+    if (element.type == "SecurityRequirement") {
+        security.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+    }
+    if (element.type == "NonFunctionalRequirement") {
+        if(element.properties.find(prop => prop.name === "Type").value=="Usability")
+        usability.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Performance")
+        performance.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="System interface")
+        sysInt.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="System operations")
+        sysOp.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Maintainability")
+        maintainability.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Reliability")
+        reliability.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="System modes and states")
+        sysMod.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Physical characteristics")
+        physCh.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Environmental conditions")
+        env.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Information management")
+        InfMan.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Policies and regulations")
+        policies.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="System life cycle sustainment")
+        sysLife.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Packaging handling shipping and transportation")
+        pack.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else other.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+    }
+}
+
+
 const doc = new Document({
     creator: "VariaMos",
     title: "System Requirements Specification Project:"+ req.body.data.name,
@@ -153,13 +255,13 @@ const doc = new Document({
     },
     sections: [{
         children: [
-            new Paragraph({
+            new Paragraph ({
                 text: "System Requirements Specification",
                 heading: HeadingLevel.TITLE,
                 
             }),
             new Paragraph({
-                text: " Project:"+ req.body.data.name,
+                text: " Project:"+ req.body.data.project.name,
                 heading: HeadingLevel.TITLE,
                 
             }),
@@ -261,12 +363,18 @@ const doc = new Document({
                 },
             }),
             new Paragraph({
+                children:functional,
+            }),
+            new Paragraph({
                 text: "Usability requirements",
                 heading: HeadingLevel.HEADING_2,
                 numbering: {
                     reference: "my-crazy-numbering",
                     level: 1,
                 },
+            }),
+            new Paragraph({
+                children:usability,
             }),
             new Paragraph({
                 text: "Performance requirements",
@@ -277,12 +385,18 @@ const doc = new Document({
                 },
             }),
             new Paragraph({
-                text: "System interface",
+                children:performance,
+            }),
+            new Paragraph({
+                text: "System interfaces",
                 heading: HeadingLevel.HEADING_2,
                 numbering: {
                     reference: "my-crazy-numbering",
                     level: 1,
                 },
+            }),
+            new Paragraph({
+                children:sysInt,
             }),
             new Paragraph({
                 text: "System operations",
@@ -293,12 +407,40 @@ const doc = new Document({
                 },
             }),
             new Paragraph({
+                children:sysOp,
+            }),
+            new Paragraph({
+                text: "Maintainability",
+                heading: HeadingLevel.HEADING_2,
+                numbering: {
+                    reference: "my-crazy-numbering",
+                    level: 2,
+                },
+            }),
+            new Paragraph({
+                children:maintainability,
+            }),
+            new Paragraph({
+                text: "Reliability",
+                heading: HeadingLevel.HEADING_2,
+                numbering: {
+                    reference: "my-crazy-numbering",
+                    level: 2,
+                },
+            }),
+            new Paragraph({
+                children:reliability,
+            }),
+            new Paragraph({
                 text: "System modes and states ",
                 heading: HeadingLevel.HEADING_2,
                 numbering: {
                     reference: "my-crazy-numbering",
                     level: 1,
                 },
+            }),
+            new Paragraph({
+                children:sysMod,
             }),
             new Paragraph({
                 text: "Physical characteristics",
@@ -309,6 +451,9 @@ const doc = new Document({
                 },
             }),
             new Paragraph({
+                children:physCh,
+            }),
+            new Paragraph({
                 text: "Environmental conditions",
                 heading: HeadingLevel.HEADING_2,
                 numbering: {
@@ -317,13 +462,22 @@ const doc = new Document({
                 },
             }),
             new Paragraph({
+                children:env,
+            }),
+            new Paragraph({
                 text: "System security",
                 heading: HeadingLevel.HEADING_2,
                 numbering: {
                     reference: "my-crazy-numbering",
                     level: 1,
                 },
+                
             }),
+           
+            new Paragraph({
+                children:security,
+            }),
+
             new Paragraph({
                 text: "Information management",
                 heading: HeadingLevel.HEADING_2,
@@ -331,6 +485,9 @@ const doc = new Document({
                     reference: "my-crazy-numbering",
                     level: 1,
                 },
+            }),
+            new Paragraph({
+                children:InfMan,
             }),
             new Paragraph({
                 text: "Policies and regulations",
@@ -341,6 +498,9 @@ const doc = new Document({
                 },
             }),
             new Paragraph({
+                children:policies,
+            }),
+            new Paragraph({
                 text: "System life cycle sustainment",
                 heading: HeadingLevel.HEADING_2,
                 numbering: {
@@ -349,12 +509,29 @@ const doc = new Document({
                 },
             }),
             new Paragraph({
+                children:sysLife,
+            }),
+            new Paragraph({
                 text: "Packaging, handling, shipping and transportation",
                 heading: HeadingLevel.HEADING_2,
                 numbering: {
                     reference: "my-crazy-numbering",
                     level: 1,
                 },
+            }),
+            new Paragraph({
+                children:pack,
+            }),
+            new Paragraph({
+                text: "Other Requirements",
+                heading: HeadingLevel.HEADING_2,
+                numbering: {
+                    reference: "my-crazy-numbering",
+                    level: 1,
+                },
+            }),
+            new Paragraph({
+                children:other,
             }),
             new Paragraph({
                 text: "Verification",
@@ -413,6 +590,45 @@ async function generateSRS(req) {
       let parentRequirement = model.elements[0];
   
   */
+  let model = await getModel(req);
+  var functional=[];
+  var security=[];
+  var usability=[];
+  var performance=[];
+  var extInt=[];
+  var logDB=[];
+  var design=[];
+  var softAtt=[];
+  var suppInfo=[];
+  var other=[];
+
+  for (let m = 0; m < model.elements.length; m++) {
+    let element = model.elements[m];
+    
+    if (element.type == "FunctionalRequirement") {
+        functional.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+    }
+    if (element.type == "SecurityRequirement") {
+        security.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+    }
+    if (element.type == "NonFunctionalRequirement") {
+        if(element.properties.find(prop => prop.name === "Type").value=="Usability")
+        usability.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Performance")
+        performance.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="External interfaces")
+        extInt.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Logical database requirements")
+        logDB.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Design constraints")
+        design.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Software system attributes")
+        softAtt.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else if(element.properties.find(prop => prop.name === "Type").value=="Supporting information")
+        suppInfo.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+        else other.push(new TextRun({text:"<"+element.properties.find(prop => prop.name === "Identifier").value+">"+element.properties.find(prop => prop.name === "Description").value, break:2}))
+    }
+}
   const doc = new Document({
       creator: "VariaMos",
       title: "Software Requirements Specification",
@@ -562,7 +778,7 @@ async function generateSRS(req) {
                   
               }),
               new Paragraph({
-                text: " Project:"+ req.body.data.name,
+                text: " Project:"+ req.body.data.project.name,
                 heading: HeadingLevel.TITLE,
                 
             }),
@@ -673,12 +889,18 @@ async function generateSRS(req) {
                   },
               }),
               new Paragraph({
+                children:extInt,
+              }),
+              new Paragraph({
                   text: "Functions",
                   heading: HeadingLevel.HEADING_2,
                   numbering: {
                       reference: "my-crazy-numbering",
                       level: 1,
                   },
+              }),
+              new Paragraph({
+                children:functional,
               }),
               new Paragraph({
                   text: "Usability Requirements ",
@@ -689,12 +911,18 @@ async function generateSRS(req) {
                   },
               }),
               new Paragraph({
+                children:usability,
+              }),
+              new Paragraph({
                   text: "Performance requirements",
                   heading: HeadingLevel.HEADING_2,
                   numbering: {
                       reference: "my-crazy-numbering",
                       level: 1,
                   },
+              }),
+              new Paragraph({
+                children:performance,
               }),
               new Paragraph({
                   text: "Logical database requirements",
@@ -705,12 +933,18 @@ async function generateSRS(req) {
                   },
               }),
               new Paragraph({
+                children:logDB,
+              }),
+              new Paragraph({
                   text: "Design constraints",
                   heading: HeadingLevel.HEADING_2,
                   numbering: {
                       reference: "my-crazy-numbering",
                       level: 1,
                   },
+              }),
+              new Paragraph({
+                children:design,
               }),
               new Paragraph({
                   text: "Software system attributes",
@@ -721,6 +955,9 @@ async function generateSRS(req) {
                   },
               }),
               new Paragraph({
+                children:softAtt,
+              }),
+              new Paragraph({
                   text: "Supporting information",
                   heading: HeadingLevel.HEADING_2,
                   numbering: {
@@ -728,6 +965,28 @@ async function generateSRS(req) {
                       level: 1,
                   },
               }),
+              new Paragraph({
+                text: "Security requirements",
+                heading: HeadingLevel.HEADING_2,
+                numbering: {
+                    reference: "my-crazy-numbering",
+                    level: 1,
+                },
+            }),
+            new Paragraph({
+                children:security,
+            }),
+            new Paragraph({
+                text: "Other Requirements",
+                heading: HeadingLevel.HEADING_2,
+                numbering: {
+                    reference: "my-crazy-numbering",
+                    level: 1,
+                },
+            }),
+            new Paragraph({
+                children:other,
+            }),
               new Paragraph({
                   text: "Verification",
                   heading: HeadingLevel.HEADING_1,
@@ -780,4 +1039,4 @@ async function generateSRS(req) {
 
 
 //export methods
-module.exports = { generateSyRS , generateSRS};
+module.exports = { generate};
