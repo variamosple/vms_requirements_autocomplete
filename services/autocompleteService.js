@@ -1010,19 +1010,21 @@ async function domainRequirementsSuggest(req) {
             } else {
                 options.push((systemDomain[words[words.length - 1]]).next);
             }
-        } else if (systemDomain[elementInSentence(systemDomain, sentence)]["next"] == (words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1])) {
-            if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder2 != "") {
+        } 
+        else if (systemDomain[elementInSentence(systemDomain, sentence)]["next"] == (words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1])) {
+            if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder2 != "") 
                 options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder2);
-            } else if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder3 != "") {
+        }
+        else if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder3 != "") {
                 if (sentence.includes("Restriction: ")) {
                     str = sentence.replace("Restriction: ", "");
                     sentence = str.trim();
+                    options = priority;
                 }
-                options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder3);
-            } else {
-                options = priority;
-            }
-        } else {
+                else options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder3);
+        }
+         
+        else {
             options = priority;
         }
     }
@@ -1318,21 +1320,23 @@ async function domainFunctionalRequirementsSuggest(req) {
             } else {
                 options.push((systemDomain[words[words.length - 1]]).next);
             }
-        } else if (systemDomain[elementInSentence(systemDomain, sentence)]["next"] == (words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1])) {
-            if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder2 != "") {
+        } 
+        else if (systemDomain[elementInSentence(systemDomain, sentence)]["next"] == (words[words.length - 3] + " " + words[words.length - 2] + " " + words[words.length - 1])) {
+            if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder2 != "") 
                 options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder2);
-            } else if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder3 != "") {
-                if (sentence.includes("Restriction: ")) {
-                    str = sentence.replace("Restriction: ", "");
-                    sentence = str.trim();
-                }
-                options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder3);
-            } else {
+            }
+        else if (systemDomain[elementInSentence(systemDomain, sentence)].placeholder3 != "") {
+                    if (sentence.includes("Restriction: ")) {
+                        str = sentence.replace("Restriction: ", "");
+                        sentence = str.trim();
+                        options = priority;
+                    }
+                    else options.push(systemDomain[elementInSentence(systemDomain, sentence)].placeholder3);
+            }
+             
+        else {
                 options = priority;
             }
-        } else {
-            options = priority;
-        }
     }
     else if (p && !a1 && !sc && !a2 && !sm && !vc && !ad && !c2 && !aa) {
         if (priority.includes(words[words.length - 1]))
