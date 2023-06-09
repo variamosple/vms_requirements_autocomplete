@@ -906,7 +906,7 @@ async function functionalRequirementsSuggest(req) {
 
 async function domainRequirementsSuggest(req) {
     console.log(req.body.input)
-
+    await getAllDomains();
     var words = req.body.input.trim().split(" ");
     var sentence = req.body.input.trim();
     var domain = req.body.domain.trim();
