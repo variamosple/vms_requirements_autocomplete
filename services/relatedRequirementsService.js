@@ -55,8 +55,10 @@ async function createRelatedRequirements(model, parentRequirement,domain) {
     console.log(reqs)
     for (let i=0;i<reqs.additionalReq.length;i++){
         let relatedRequirement = await createRelatedRequirement(parentRequirement, i, reqs.additionalReq[i]);
-        relatedRequirement.x += dx;
-        relatedRequirement.y += dy;
+        if((relatedRequirement.x+dx)>=0) relatedRequirement.x += dx;
+        else relatedRequirement.x=0
+        if((relatedRequirement.y+dy)>=0) relatedRequirement.y += dy;
+        else relatedRequirement.y=0
         
         model.elements.push(relatedRequirement);
         let relationship = createRelationship(parentRequirement, relatedRequirement);
