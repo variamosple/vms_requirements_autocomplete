@@ -26,14 +26,20 @@ async function getModel(req){
         }
 
         if (!model){
-        for (let m = 0; m < productLine.applicationEngineering.models.length; m++) {
-            let plmodel = productLine.applicationEngineering.models[m];
-            if (plmodel.id == modelId) {
-                model = plmodel;
-                m = productLine.applicationEngineering.models.length;
-                p = project.productLines.length;
-            }
-        }
+            console.log("app")
+            productLine.applicationEngineering.applications.forEach(application => {
+                for (let m = 0; m < application.models.length; m++) {
+                    let plmodel = application.models[m];
+                    if (plmodel.id == modelId) {
+                        model = plmodel;
+                        m = application.models.length;
+                        p = project.productLines.length;
+                        pl=productLine;
+                    }
+                }
+                
+            });
+        
     }
     }
     
