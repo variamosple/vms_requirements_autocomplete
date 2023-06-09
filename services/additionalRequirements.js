@@ -169,16 +169,17 @@ function ObjectInSentence(obj, sentence) {
 function addReq(arr,priority,str0,str1){
     arr.forEach(element => {
         if(priority=='High'){
-            if(str0.match('should')) str0.replace('should','shall');
-            if(str0.match('could')) str0.replace('could','shall');
+            if(str0.includes('should')) str0=str0.replace('should','shall');
+            if(str0.includes('could')) str0=str0.replace('could','shall');
         }
         if(priority=='Medium'){
-            if(str0.match('shall')) str0.replace('shall','should');
-            if(str0.match('could')) str0.replace('could','should');
+            if(str0.includes('shall')) str0=str0.replace("shall","should");
+            if(str0.includes('could')) str0=str0.replace('could','should');
+            
         }
         if(priority=='Low'){
-            if(str0.match('should')) str0.replace('should','could');
-            if(str0.match('shall')) str0.replace('shall','could');
+            if(str0.includes('should')) str0=str0.replace('should','could');
+            if(str0.includes('shall')) str0=str0.replace('shall','could');
         }
         additionalReq.push({'criteria':element,'priority':priority,'requirement':str0+element+str1})
         
