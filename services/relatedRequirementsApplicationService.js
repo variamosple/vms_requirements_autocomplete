@@ -7,7 +7,21 @@ async function suggest(req) {
     let model = null;
     for (let p = 0; p < project.productLines.length; p++) {
         const productLine = project.productLines[p];
-        for (let m = 0; m < productLine.applicationEngineering.models.length; m++) {
+        productLine.applicationEngineering.applications.forEach(application => {
+            for (let m = 0; m < application.models.length; m++) {
+                let plmodel = application.models[m];
+                if (plmodel.id == modelId) {
+                    model = plmodel;
+                    m = application.models.length;
+                    p = project.productLines.length;
+                    pl=productLine;
+                    domain= productLine.domain;
+                    console.log(domain)
+                }
+            }
+            
+        });
+/*         for (let m = 0; m < productLine.applicationEngineering.models.length; m++) {
             let plmodel = productLine.applicationEngineering.models[m];
             if (plmodel.id == modelId) {
                 model = plmodel;
@@ -16,7 +30,7 @@ async function suggest(req) {
                 domain= productLine.domain;
                 console.log(domain)
             }
-        }
+        } */
     }
     
     
