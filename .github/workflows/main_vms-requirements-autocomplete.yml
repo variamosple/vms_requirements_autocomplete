@@ -41,7 +41,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'variamos2023'
+          app-name: 'vms-requirements-autocomplete-2023'
           slot-name: 'production'
           publish-profile: ${{secrets.PRODUCTIONSLOTPUBLISHPROFILE}}
           images: '${{vars.ACR}}/${{secrets.ACRUSERNAME}}/vms_requirements_autocomplete:latest'
