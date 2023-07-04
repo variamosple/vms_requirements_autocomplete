@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - vms-requirements-autocomplete
+name: Build and deploy Node.js app to Azure Web App - vms-requirements-autocomplete_dev
 
 on:
   push:
@@ -19,15 +19,15 @@ jobs:
       - name: Login to ACR
         uses: docker/login-action@v1
         with:
-          registry: ${{vars.ACR}}
-          username: ${{secrets.ACRUSERNAME}}
-          password: ${{secrets.ACRUSERPASSWORD}}
+          registry: ${{vars.ACRDEV}}
+          username: ${{secrets.ACRUSERNAMEDEV}}
+          password: ${{secrets.ACRUSERPASSWORDDEV}}
     
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{vars.ACR}}/${{secrets.ACRUSERNAME}}/vms_requirements_autocomplete:latest
+          tags: ${{vars.ACRDEV}}/${{secrets.ACRUSERNAMEDEV}}/vms_requirements_autocomplete:latest
           file: ./Dockerfile
   deploy:
     runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'vms-requirements-autocomplete-2023'
+          app-name: 'vms-requirements-autocomplete2024'
           slot-name: 'production'
-          publish-profile: ${{secrets.PRODUCTIONSLOTPUBLISHPROFILE}}
-          images: '${{vars.ACR}}/${{secrets.ACRUSERNAME}}/vms_requirements_autocomplete:latest'
+          publish-profile: ${{secrets.PRODUCTIONSLOTPUBLISHPROFILEDEV}}
+          images: '${{vars.ACRDEV}}/${{secrets.ACRUSERNAMEDEV}}/vms_requirements_autocomplete:latest'
