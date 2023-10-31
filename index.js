@@ -1,6 +1,7 @@
 var express = require('express');
 var cors = require('cors');
 var autocompleteService = require("./services/autocompleteService");
+var autocompleteServiceV2 = require("./services/autocompleteServiceV2");
 var additionalRequirements = require('./services/additionalRequirements');
 var relatedRequirementsService = require('./services/relatedRequirementsService');
 var relatedRequirementsApplicationService = require('./services/relatedRequirementsApplicationService');
@@ -44,7 +45,7 @@ app.post('/security/suggest', async function (req, res, next) {
     try {
         console.log(req.body.input)
         res.setHeader('Content-Type', 'application/json');
-        let data = await autocompleteService.securityRequirementsSuggest(req);
+        let data = await autocompleteServiceV2.securityRequirementsSuggest(req);
         res.end(JSON.stringify(data));
     } catch (error) {
         res.status(400).send(JSON.stringify(error));
@@ -55,7 +56,7 @@ app.post('/security/suggest/functional', async function (req, res, next) {
     try {
         console.log(req.body.input)
         res.setHeader('Content-Type', 'application/json');
-        let data = await autocompleteService.functionalRequirementsSuggest(req);
+        let data = await autocompleteServiceV2.functionalRequirementsSuggest(req);
         res.end(JSON.stringify(data));
     } catch (error) {
         res.status(400).send(JSON.stringify(error));
@@ -66,7 +67,7 @@ app.post('/domain/suggest', async function (req, res, next) {
     try {
         console.log(req.body.input)
         res.setHeader('Content-Type', 'application/json');
-        let data = await autocompleteService.domainRequirementsSuggest(req);
+        let data = await autocompleteServiceV2.domainRequirementsSuggest(req);
         res.end(JSON.stringify(data));
     } catch (error) {
         res.status(400).send(JSON.stringify(error));
@@ -77,7 +78,17 @@ app.post('/domain/suggest/functional', async function (req, res, next) {
     try {
         console.log(req.body.input)
         res.setHeader('Content-Type', 'application/json');
-        let data = await autocompleteService.domainFunctionalRequirementsSuggest(req);
+        let data = await autocompleteServiceV2.domainFunctionalRequirementsSuggest(req);
+        res.end(JSON.stringify(data));
+    } catch (error) {
+        res.status(400).send(JSON.stringify(error));
+    }
+});
+app.post('/end', async function (req, res, next) {
+    try {
+        console.log(req.body.input)
+        res.setHeader('Content-Type', 'application/json');
+        let data = await autocompleteServiceV2.endRequirement(req);
         res.end(JSON.stringify(data));
     } catch (error) {
         res.status(400).send(JSON.stringify(error));
