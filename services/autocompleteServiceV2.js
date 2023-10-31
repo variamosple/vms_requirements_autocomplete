@@ -1882,9 +1882,9 @@ async function endRequirement(req) {
     //await getAllDomains();
     //var words = req.body.input.trim().split(" ");
     var sentence = req.body.input.trim();
-    if(sentence.includes("additionalDetails:"))sentence = sentence.replace("additionalDetails:", "");
-    if(sentence.includes("validationCriteria:"))sentence = sentence.replace("validationCriteria:", "");
-    let data = { "input": sentence};
+    if(sentence.includes("additionalDetails:"))sentence = sentence.replace("additionalDetails: ", "");
+    if(sentence.includes("validationCriteria:"))sentence = sentence.replace("validationCriteria: ", "");
+    let data = { "input": sentence[0].toUpperCase() + sentence.slice(1).toLowerCase()};
 
 
     return data;
