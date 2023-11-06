@@ -6,6 +6,8 @@ var additionalRequirements = require('./services/additionalRequirements');
 var relatedRequirementsService = require('./services/relatedRequirementsService');
 var relatedRequirementsApplicationService = require('./services/relatedRequirementsApplicationService');
 var generate = require('./services/generateSRS');
+var formatDomainRequirement = require('./services/formatDomainRequirement');
+var formatApplicationRequirement = require('./services/formatApplicationRequirement');
 
 var app = express();
 const PORT = process.env.PORT || 8080;
@@ -94,7 +96,42 @@ app.post('/end', async function (req, res, next) {
         res.status(400).send(JSON.stringify(error));
     }
 });
-
+app.post('/FormatDomainRequirement', async function (req, res, next) {
+    try {
+        console.log(req.body.data)
+        res.setHeader('Content-Type', 'application/json');
+        let project = await formatDomainRequirement.format(req);
+        console.log(project);
+        let contentResponse = {
+            transactionId: "1",
+            message: "Completed.",
+            data: {
+                content: project
+            }
+        }
+        res.end(JSON.stringify(contentResponse));
+    } catch (error) {
+        res.status(400).send(JSON.stringify(error));
+    }
+});
+app.post('/FormatApplicationRequirement', async function (req, res, next) {
+    try {
+        console.log(req.body.data)
+        res.setHeader('Content-Type', 'application/json');
+        let project = await formatApplicationRequirement.format(req);
+        console.log(project);
+        let contentResponse = {
+            transactionId: "1",
+            message: "Completed.",
+            data: {
+                content: project
+            }
+        }
+        res.end(JSON.stringify(contentResponse));
+    } catch (error) {
+        res.status(400).send(JSON.stringify(error));
+    }
+});
 app.post('/additionalRequirements', async function (req, res, next) {
     try {
         console.log(req.body.input)
