@@ -31,10 +31,11 @@ async function format(req) {
             let element = model.elements[m];
            // console.log(selectedElementId)
             if (element.id == selectedElementId) {
-                element.properties.find(prop => prop.name === "Description").value = formatReq.endRequirement(({"body":{"input":element.properties.find(prop => prop.name === "Description").value,"domain":domain}}));
+                element.properties.find(prop => prop.name === "Description").value = (await formatReq.endRequirement(({"body":{"input":element.properties.find(prop => prop.name === "Description").value,"domain":domain}}))).input;
             }
         }
     }
  
     return project;
 }
+module.exports = { format };
