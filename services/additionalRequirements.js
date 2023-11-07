@@ -205,7 +205,7 @@ async function additionalRequirementsSuggest(req) {
         
         var sc;
         securityCriteria.some(element => {
-            if (sentence.match(element)) sc=element;
+            if (sentence.toLowerCase().match(element.toLowerCase())) sc=element.toLowerCase();
         })
         console.log(sc);
         var str1=req.body.input.trim().split("by");
