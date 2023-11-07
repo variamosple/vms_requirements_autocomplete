@@ -181,7 +181,7 @@ function addReq(arr,priority,str0,str1){
             if(str0.includes('should')) str0=str0.replace('should','could');
             if(str0.includes('shall')) str0=str0.replace('shall','could');
         }
-        additionalReq.push({'criteria':element,'priority':priority,'requirement':str0+element+str1})
+        additionalReq.push({'criteria':element,'priority':priority,'requirement':str0[0].toUpperCase() + str0.slice(1)+element.toLowerCase()+str1})
         
     });
 }
@@ -204,12 +204,13 @@ async function additionalRequirementsSuggest(req) {
         console.log(securityCriteria);
         
         var sc;
+        console.log(sentence.toLowerCase());
         securityCriteria.some(element => {
-            if (sentence.toLowerCase().match(element.toLowerCase())) sc=element.toLowerCase();
+            if (sentence.toLowerCase().match(element.toLowerCase())) sc=element;
         })
         console.log(sc);
         var str1=req.body.input.trim().split("by");
-        var words = str1[0].trim().split(sc);
+        var words = str1[0].toLowerCase().trim().split(sc.toLowerCase());
         console.log(req.body.domain)
         if(domains.includes(req.body.domain)){
             await getDomainCriteria('isAppliedBy',sc,req.body.domain);
