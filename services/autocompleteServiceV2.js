@@ -1140,7 +1140,7 @@ async function domainRequirementsSuggest(req) {
         return sentence.includes("of " + element);
     })
     var sm = securityMechanism.some(element => {
-        return (sentence.includes(element) || (sentence.includes("by") && words[words.length-1]!="by"));
+        return (sentence.includes(element) || (sentence.includes("by") && words[words.length-1]!="by" && !sentence.includes("<Security Mechanism>")));
     })
 
     //var sm=false//words.some(item => securityMechanism.includes(item));
