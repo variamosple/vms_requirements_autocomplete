@@ -102,6 +102,9 @@ async function createRelatedRequirements(model, parentRequirement,domain) {
     relatedRequirement.properties[0].value = parentRequirement.properties[0].value + "_" + (index+1);
     relatedRequirement.properties.find(prop => prop.name === "Version").value = 1;
     relatedRequirement.properties.find(prop => prop.name === "Description").value = newReq.requirement;
+    relatedRequirement.properties.find(prop => prop.name === "Description").metadata.input = newReq.requirement;
+    relatedRequirement.properties.find(prop => prop.name === "Description").metadata.secret.securityCriteria = newReq.criteria;
+    relatedRequirement.properties.find(prop => prop.name === "Description").metadata.secret.securityMechanism = "";
     relatedRequirement.properties.find(prop => prop.name === "StakeholderPriority").value = newReq.priority;
 
     
