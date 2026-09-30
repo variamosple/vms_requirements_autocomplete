@@ -8,6 +8,7 @@ var relatedRequirementsApplicationService = require('./services/relatedRequireme
 var generate = require('./services/generateSRS');
 var formatDomainRequirement = require('./services/formatDomainRequirement');
 var formatApplicationRequirement = require('./services/formatApplicationRequirement');
+var healthService = require('./services/healthService');
 
 var app = express();
 const PORT = process.env.PORT || 8080;
@@ -21,6 +22,15 @@ app.use(express.urlencoded({limit: '50mb'}));
 
 
 app.use(cors());
+
+app.get('/health', function (req, res) {
+    try {
+        const health = healthService.getHealth(VERSION);
+        res.status(200).json(health);
+    } catch (error) {
+        res.status(500).json({ status: "DOWN", error: error.message });
+    }
+});
 
 app.get('/', async function (req, res, next) {
     try {
